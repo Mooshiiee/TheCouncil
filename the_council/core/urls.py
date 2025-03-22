@@ -10,6 +10,7 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('signin/', views.signin, name='signin'),
     path('home/', views.home, name='home'),
+    path('settings/', views.settings, name='settings'),
     path('signout/', views.signout, name='signout'),
     path('discussions/', views.discussions, name='discussions'),
     path('discussions/<int:topic_id>/', views.discussion_detail, name='discussion_detail'),
