@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from .models import DiscussionTopic, Comment
 from .forms import DiscussionTopicForm
 
-
 def landing(request):
     return render(request, 'core/landing.html')
 
@@ -44,6 +43,10 @@ def signin(request):
 def home(request):
     # This view is for settings and a link to the discussions page
     return render(request, 'core/home.html', {'user': request.user})
+
+
+def settings(request):
+    return render(request, 'core/settings.html')
 
 
 def discussions(request):
