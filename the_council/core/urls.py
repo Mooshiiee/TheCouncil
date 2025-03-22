@@ -11,4 +11,8 @@ urlpatterns = [
     path('signin/', views.signin, name='signin'),
     path('home/', views.home, name='home'),
     path('signout/', views.signout, name='signout'),
+    path('discussions/', views.discussions, name='discussions'),
+    path('discussions/<int:topic_id>/', views.discussion_detail, name='discussion_detail'),
+    path('discussions/<int:topic_id>/add_comment/', views.add_comment, name='add_comment'),
+    path('discussions/create/', views.create_discussion, name='create_discussion'),
 ]
