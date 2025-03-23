@@ -50,7 +50,11 @@ def settings(request):
 
 
 def discussions(request):
-    discussion_topics = DiscussionTopic.objects.all().order_by('-created_at')
+    query = request.GET.get('q')
+    if query:
+        discussion_topics = DiscussionTopic.objects.filter(title__icontains=query).order_by('-created_at')
+    else:
+        discussion_topics = DiscussionTopic.objects.all().order_by('-created_at')
     return render(request, 'core/discussions.html', {'discussion_topics': discussion_topics})
 
 
