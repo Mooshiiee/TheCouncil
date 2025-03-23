@@ -5,10 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Council - {{ discussion.title }}</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+     <style>
+       .fallacy-count-1 {
+            background: linear-gradient(to bottom, #fefcbf, #fcf791);
+            border: 1px solid #fcf791;
+        }
+        .fallacy-count-2 {
+            background: linear-gradient(to bottom, #fed7aa, #fca545);
+            border: 1px solid #fca545;
+        }
+        .fallacy-count-3 {
+            background: linear-gradient(to bottom, #fecaca, #f87171);
+           border: 1px solid #f87171;
+       }
+    </style>
 </head>
 <body class="bg-gray-100 font-sans">
+    {% include "core/header.html" %}
     <div class="container mx-auto p-8">
-        <a href="{% url 'core:discussions' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block">Back to Discussions</a>
+       <a href="{% url 'core:discussions' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block">Back to Discussions</a>
         <h1 class="text-4xl font-bold text-center text-gray-800 mb-6">{{ discussion.title }}</h1>
         <p class="text-lg text-center text-gray-600 mb-8">Posted by {{ discussion.author.username }} on {{ discussion.created_at }}</p>
 
@@ -45,9 +60,72 @@
                 {% csrf_token %}
                 <textarea name="content" class="w-full p-2 border rounded" required></textarea>
                 <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2">Submit</button>
+            <button type="button" class="analyze-button bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mt-2 text-sm">Analyze</button>
+            <div class="analysis-result hidden mt-2 p-2 bg-gray-100 border rounded"></div>
             </form>
         </div>
     </div>
+    {% include "core/footer.html" %}
 </body>
+<script>
+   // Function to handle the analysis
+   function handleAnalyze(event) {
+       event.preventDefault();
+        const form = event.target.closest('form');
+        const content = form.querySelector('textarea[name="content"]').value;
+        const resultContainer = form.querySelector('.analysis-result');
+
+       fetch('{% url "core:analyze_comment" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+            body: 'content=' + encodeURIComponent(content),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.analysis) {
+                let html = '';
+                if (data.analysis.found_fallacies && data.analysis.found_fallacies.length > 0) {
+                    html += '<h4 class="font-bold text-red-600 mb-2">Fallacies Found:</h4>';
+                    html += '<ul>';
+                    data.analysis.found_fallacies.forEach(fallacy => {
+                        html += `<li class="mb-2"><strong>${fallacy.fallacy_type}:</strong> ${fallacy.one_line_explanation}</li>`;
+                    });
+                    html += '</ul>';
+                }
+                if (data.analysis.short_overall_suggestion) {
+                    html += `<h4 class="font-bold mt-4 mb-2">Overall Suggestion:</h4><p>${data.analysis.short_overall_suggestion}</p>`;
+                }
+                resultContainer.innerHTML = html;
+            } else {
+                resultContainer.textContent = 'No fallacies found.';
+            }
+
+           resultContainer.classList.remove('hidden', 'fallacy-count-1', 'fallacy-count-2', 'fallacy-count-3');
+            const fallacyCount = data.analysis?.found_fallacies?.length || 0;
+            if (fallacyCount > 0) {
+                resultContainer.classList.add(`fallacy-count-${Math.min(fallacyCount, 3)}`);
+            }
+        });
+    }
+
+   // Add event listeners for analyze buttons on initial load
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.analyze-button').forEach(button => {
+            button.addEventListener('click', handleAnalyze);
+        });
+
+       // Add event listeners for reply buttons on initial load
+        document.querySelectorAll('.reply-button').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                const replyFormContainer = event.target.nextElementSibling;
+                replyFormContainer.classList.toggle('hidden');
+            });
+        });
+    });
+
+</script>
 </html>
-</write_to_file>
