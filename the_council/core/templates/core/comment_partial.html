@@ -14,36 +14,19 @@
             <input type="hidden" name="parent_comment_id" value="{{ comment.id }}">
             <textarea name="content" class="w-full p-2 border rounded" required></textarea>
             <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mt-2 text-sm">Submit Reply</button>
+            <button type="button" class="analyze-button bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mt-2 text-sm">Analyze</button>
+            <div class="analysis-result hidden mt-2 p-2 bg-gray-100 border rounded"></div>
         </form>
     </div>
 
     {% if comment.replies.all %}
-        <div class="ml-8 mt-4">
-            <h3 class="text-lg font-bold text-gray-800 mb-2">Replies</h3>
-            <ul>
-                {% for reply in comment.replies.all %}
-                    {% include "core/comment_partial.html" with comment=reply discussion=discussion %}
-                {% endfor %}
-            </ul>
-        </div>
+    <div class="ml-8 mt-4">
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Replies</h3>
+        <ul>
+            {% for reply in comment.replies.all %}
+            {% include "core/comment_partial.html" with comment=reply discussion=discussion %}
+            {% endfor %}
+        </ul>
+    </div>
     {% endif %}
 </li>
-<script>
-    // Find all elements with the class 'reply-button'
-    const replyButtons = document.querySelectorAll('.reply-button');
-
-    // Add a click event listener to each 'reply-button'
-    replyButtons.forEach(button => {
-        button.addEventListener('click', function(event) {
-            event.preventDefault();
-            // Find the closest ancestor with class 'bg-white' (the comment container)
-            const commentContainer = event.target.closest('.bg-white');
-
-            // Within that container, find the 'reply-form-container'
-            const replyFormContainer = commentContainer.querySelector('.reply-form-container');
-
-            // Toggle the 'hidden' class on the 'reply-form-container'
-            replyFormContainer.classList.toggle('hidden');
-        });
-    });
-</script>

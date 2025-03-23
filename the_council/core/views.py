@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from .models import DiscussionTopic, Comment
 from .forms import DiscussionTopicForm
 
@@ -94,6 +95,18 @@ def create_discussion(request):
     else:
         form = DiscussionTopicForm()
     return render(request, 'core/create_discussion.html', {'form': form})
+
+
+from .ai_utils import analyze_fallacies
+
+
+@login_required
+def analyze_comment(request):
+    if request.method == 'POST':
+        content = request.POST.get('content', '')
+        analysis = analyze_fallacies(content)
+        return JsonResponse({'analysis': analysis})
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
 def signout(request):
