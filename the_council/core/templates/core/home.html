@@ -12,13 +12,13 @@
         <h1 class="text-4xl font-bold text-center text-gray-800 mb-6">The Council</h1>
         <p class="text-lg text-center text-gray-600 mb-8">Welcome, {{ user.username }}!</p>
 
-        <div class="mb-4">
-           <a href="{% url 'core:discussions' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">View Discussions</a>
+        <!-- Add Image Below the Welcome Message -->
+        <div class="text-center">
+            <img src="https://img.freepik.com/free-vector/group-therapy-concept_23-2148655388.jpg" alt="Council Image" class="mx-auto mb-8">
         </div>
-        <div class="mb-4">
-            <a href="{% url 'core:signout' %}" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Sign Out</a>
-        </div>
+
     </div>
     {% include "core/footer.html" %}
 </body>
 </html>
+
