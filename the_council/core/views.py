@@ -4,6 +4,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import DiscussionTopic, Comment
 from .forms import DiscussionTopicForm
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from .ai_utils import analyze_fallacies
+import json
 
 def landing(request):
     return render(request, 'core/landing.html')
@@ -99,3 +103,22 @@ def create_discussion(request):
 def signout(request):
     logout(request)
     return redirect('core:landing')
+
+@login_required
+def analyze_prompt(request):
+    return render(request, 'core/analyze_prompt.html')
+
+@csrf_exempt
+def analyze_prompt_api(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            prompt_text = data.get('prompt')
+            if prompt_text:
+                analysis_result = analyze_fallacies(prompt_text)
+                return JsonResponse({'analysis': analysis_result})
+            else:
+                return JsonResponse({'error': 'No prompt provided'}, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)

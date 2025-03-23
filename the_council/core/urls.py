@@ -16,4 +16,6 @@ urlpatterns = [
     path('discussions/<int:topic_id>/', views.discussion_detail, name='discussion_detail'),
     path('discussions/<int:topic_id>/add_comment/', views.add_comment, name='add_comment'),
     path('discussions/create/', views.create_discussion, name='create_discussion'),
+    path('analyze_prompt/', views.analyze_prompt, name='analyze_prompt'),
+    path('analyze_prompt_api/', views.analyze_prompt_api, name='analyze_prompt_api'),
 ]
