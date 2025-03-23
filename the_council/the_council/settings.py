@@ -13,9 +13,9 @@ import os
 from pathlib import Path
 
 
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-GEMINI_MODEL = ''
 
+# Add this to your settings.py
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
