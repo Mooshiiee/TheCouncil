@@ -1,0 +1,49 @@
+<li class="bg-white p-4 rounded-lg shadow-md mb-4">
+    <p class="text-gray-600 text-sm">By {{ comment.author.username }} on {{ comment.created_at }}</p>
+    <p class="mt-2">{{ comment.content }}</p>
+    {% if comment.fallacy_analysis %}
+        <div class="mt-4 p-3 bg-green-100 rounded-lg border border-green-200">
+            <h4 class="font-bold text-green-800 mb-2">Logical Fallacy Analysis</h4>
+            <p class="text-green-700 text-sm">{{ comment.fallacy_analysis }}</p>
+        </div>
+    {% endif %}
+    <button class="reply-button bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mt-2 text-sm" data-comment-id="{{ comment.id }}">Reply</button>
+    <div class="reply-form-container hidden mt-2">
+        <form action="{% url 'core:add_comment' discussion.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="parent_comment_id" value="{{ comment.id }}">
+            <textarea name="content" class="w-full p-2 border rounded" required></textarea>
+            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mt-2 text-sm">Submit Reply</button>
+        </form>
+    </div>
+
+    {% if comment.replies.all %}
+        <div class="ml-8 mt-4">
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Replies</h3>
+            <ul>
+                {% for reply in comment.replies.all %}
+                    {% include "core/comment_partial.html" with comment=reply discussion=discussion %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+</li>
+<script>
+    // Find all elements with the class 'reply-button'
+    const replyButtons = document.querySelectorAll('.reply-button');
+
+    // Add a click event listener to each 'reply-button'
+    replyButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            // Find the closest ancestor with class 'bg-white' (the comment container)
+            const commentContainer = event.target.closest('.bg-white');
+
+            // Within that container, find the 'reply-form-container'
+            const replyFormContainer = commentContainer.querySelector('.reply-form-container');
+
+            // Toggle the 'hidden' class on the 'reply-form-container'
+            replyFormContainer.classList.toggle('hidden');
+        });
+    });
+</script>

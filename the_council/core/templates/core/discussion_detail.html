@@ -30,20 +30,8 @@
                                     <p class="text-green-700 text-sm">{{ comment.fallacy_analysis }}</p>
                                 </div>
                             {% endif %}
-                            {% if comment.replies.all %}
-                                <div class="ml-8 mt-4">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-2">Replies</h3>
-                                    <ul>
-                                        {% for reply in comment.replies.all %}
-                                            <li class="bg-gray-100 p-4 rounded-lg shadow-md mb-2">
-                                                <p class="text-gray-600 text-sm">By {{ reply.author.username }} on {{ reply.created_at }}</p>
-                                                <p class="mt-2">{{ reply.content }}</p>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
-                        </li>
+                        {% include "core/comment_partial.html" with comment=comment discussion=discussion %}
+
                     {% endfor %}
                 </ul>
             {% else %}

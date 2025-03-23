@@ -1,13 +1,16 @@
-from django.conf import settings
-import google as genai
-from google.generativeai import types
+from google.genai import types
+from google import genai
+import os
+from dotenv import load_dotenv
 
-
+load_dotenv()
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+print(GEMINI_API_KEY)
 
 def analyze_fallacies(text):
     """Analyze text for logical fallacies using Google GenAI"""
     
-    client = genai.Client(api_key="GEMINI_API_KEY")
+    client = genai.Client(api_key=GEMINI_API_KEY)
     
     prompt = f"""Analyze this text for logical fallacies. 
     Return a concise bullet point list of any found fallacies with brief explanations.
@@ -15,8 +18,6 @@ def analyze_fallacies(text):
     Text"""
     
     try:
-        response = model.generate_content(prompt)
-        
         response = client.models.generate_content(
             model="gemini-2.0-flash",
             config=types.GenerateContentConfig(
