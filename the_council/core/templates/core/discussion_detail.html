@@ -24,6 +24,12 @@
                         <li class="bg-white p-4 rounded-lg shadow-md mb-4">
                             <p class="text-gray-600 text-sm">By {{ comment.author.username }} on {{ comment.created_at }}</p>
                             <p class="mt-2">{{ comment.content }}</p>
+                            {% if comment.fallacy_analysis %}
+                                <div class="mt-4 p-3 bg-green-100 rounded-lg border border-green-200">
+                                    <h4 class="font-bold text-green-800 mb-2">Logical Fallacy Analysis</h4>
+                                    <p class="text-green-700 text-sm">{{ comment.fallacy_analysis }}</p>
+                                </div>
+                            {% endif %}
                             {% if comment.replies.all %}
                                 <div class="ml-8 mt-4">
                                     <h3 class="text-lg font-bold text-gray-800 mb-2">Replies</h3>
